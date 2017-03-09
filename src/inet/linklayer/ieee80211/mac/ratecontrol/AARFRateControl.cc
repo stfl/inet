@@ -22,6 +22,8 @@ namespace ieee80211 {
 
 Define_Module(AARFRateControl);
 
+simsignal_t ratesignal = cComponent::registerSignal("databitrate");
+
 void AARFRateControl::initialize(int stage)
 {
     RateControlBase::initialize(stage);
@@ -52,6 +54,8 @@ void AARFRateControl::handleMessage(cMessage* msg)
 void AARFRateControl::updateDisplayString()
 {
     getDisplayString().setTagArg("t", 0, currentMode->getName());
+    bps rate = currentMode->getDataMode()->getNetBitrate();
+    emit(ratesignal, rate.get());
 }
 
 void AARFRateControl::frameTransmitted(const Ieee80211Frame* frame, int retryCount, bool isSuccessful, bool isGivenUp)

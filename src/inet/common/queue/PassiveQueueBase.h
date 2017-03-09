@@ -34,7 +34,7 @@ namespace inet {
  */
 class INET_API PassiveQueueBase : public cSimpleModule, public IPassiveQueue
 {
-  protected:
+  public:
     std::list<IPassiveQueueListener *> listeners;
 
     // state
