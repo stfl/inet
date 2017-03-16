@@ -483,7 +483,7 @@ void GaugeFigure::layout()
     valueFigure->setFont(Font("", getBounds().width * FONT_SIZE_PERCENT, 0));
     valueFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height * VALUE_Y_PERCENT));
 
-    labelFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height));
+    labelFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height + 10));
 }
 
 void GaugeFigure::refresh()

@@ -374,7 +374,7 @@ void ThermometerFigure::layout()
         setNumberGeometry(numberFigures[i], i);
     }
 
-    labelFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height));
+    labelFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height + 10));
 }
 
 void ThermometerFigure::refresh()

@@ -385,7 +385,7 @@ void CounterFigure::layout()
         digits[i].text->setPosition(digits[i].bounds->getBounds().getCenter());
     }
 
-    labelFigure->setPosition(Point(bounds.x + bounds.width / 2, bounds.y + bounds.height));
+    labelFigure->setPosition(Point(bounds.x + bounds.width / 2, bounds.y + bounds.height + 10));
 }
 
 void CounterFigure::addChildren()

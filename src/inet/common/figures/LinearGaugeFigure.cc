@@ -366,7 +366,7 @@ void LinearGaugeFigure::layout()
     }
 
     setNeedleGeometry();
-    labelFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height));
+    labelFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height + 10));
 }
 
 void LinearGaugeFigure::refresh()

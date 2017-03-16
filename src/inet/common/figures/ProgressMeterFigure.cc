@@ -241,7 +241,7 @@ void ProgressMeterFigure::layout()
     backgroundFigure->setBounds(bounds);
 
     valueFigure->setPosition(Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2));
-    labelFigure->setPosition(Point(bounds.x + bounds.width / 2, bounds.y + bounds.height));
+    labelFigure->setPosition(Point(bounds.x + bounds.width / 2, bounds.y + bounds.height + 10));
 }
 
 void ProgressMeterFigure::addChildren()
