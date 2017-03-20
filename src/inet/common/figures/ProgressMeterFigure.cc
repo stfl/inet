@@ -41,6 +41,7 @@ static const char *PKEY_POS = "pos";
 static const char *PKEY_SIZE = "size";
 static const char *PKEY_ANCHOR = "anchor";
 static const char *PKEY_BOUNDS = "bounds";
+static const char *PKEY_LABELOFFSET = "labelOffset";
 
 ProgressMeterFigure::ProgressMeterFigure(const char *name) : cGroupFigure(name)
 {
@@ -188,9 +189,12 @@ void ProgressMeterFigure::parse(cProperty *property)
 {
     cGroupFigure::parse(property);
 
+    const char *s;
+    if ((s = property->getValue(PKEY_LABELOFFSET)) != nullptr)
+        setLabelOffset(atoi(s));
+
     setBounds(parseBounds(property, getBounds()));
 
-    const char *s;
     if ((s = property->getValue(PKEY_BACKGROUND_COLOR)) != nullptr)
         setBackgroundColor(parseColor(s));
     if ((s = property->getValue(PKEY_STRIP_COLOR)) != nullptr)
@@ -227,7 +231,7 @@ const char **ProgressMeterFigure::getAllowedPropertyKeys() const
             PKEY_BACKGROUND_COLOR, PKEY_STRIP_COLOR, PKEY_CORNER_RADIUS, PKEY_BORDER_WIDTH,
             PKEY_MIN_VALUE, PKEY_MAX_VALUE, PKEY_TEXT, PKEY_TEXT_FONT, PKEY_TEXT_COLOR, PKEY_LABEL,
             PKEY_LABEL_FONT, PKEY_LABEL_COLOR, PKEY_INITIAL_VALUE, PKEY_POS, PKEY_SIZE, PKEY_ANCHOR,
-            PKEY_BOUNDS, nullptr
+            PKEY_BOUNDS, PKEY_LABELOFFSET, nullptr
         };
         concatArrays(keys, cGroupFigure::getAllowedPropertyKeys(), localKeys);
     }
@@ -241,7 +245,7 @@ void ProgressMeterFigure::layout()
     backgroundFigure->setBounds(bounds);
 
     valueFigure->setPosition(Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2));
-    labelFigure->setPosition(Point(bounds.x + bounds.width / 2, bounds.y + bounds.height + 10));
+    labelFigure->setPosition(Point(bounds.x + bounds.width / 2, bounds.y + bounds.height + labelOffset));
 }
 
 void ProgressMeterFigure::addChildren()
@@ -282,6 +286,11 @@ void ProgressMeterFigure::setValue(int series, simtime_t timestamp, double newVa
         value = newValue;
         refresh();
     }
+}
+
+void ProgressMeterFigure::setLabelOffset(int offset)
+{
+    labelOffset = offset;
 }
 
 void ProgressMeterFigure::refresh()

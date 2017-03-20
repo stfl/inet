@@ -36,6 +36,7 @@ class INET_API ProgressMeterFigure : public cGroupFigure, public inet::IIndicato
     double min = 0;
     double max = 100;
     double value = NaN;
+    int labelOffset = 10;
     std::string textFormat = "%g";
 
   protected:
@@ -90,6 +91,8 @@ class INET_API ProgressMeterFigure : public cGroupFigure, public inet::IIndicato
 
     double getMaxValue() const;
     void setMaxValue(double value);
+
+    void setLabelOffset(int);
 };
 
 // } // namespace inet

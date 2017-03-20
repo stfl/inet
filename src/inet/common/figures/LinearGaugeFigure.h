@@ -49,6 +49,7 @@ class INET_API LinearGaugeFigure : public cGroupFigure, public inet::IIndicatorF
     void setTickGeometry(cLineFigure *tick, int index);
     void setNumberGeometry(cTextFigure *number, int index);
     void setNeedleGeometry();
+    void setLabelOffset(int);
 
     void redrawTicks();
     void layout();

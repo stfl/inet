@@ -97,6 +97,8 @@ class INET_API CounterFigure : public cGroupFigure, public inet::IIndicatorFigur
 
     Anchor getAnchor() const;
     void setAnchor(Anchor anchor);
+
+    void setLabelOffset(int);
 };
 
 // } // namespace inet

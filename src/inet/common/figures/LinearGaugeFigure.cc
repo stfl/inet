@@ -183,15 +183,13 @@ void LinearGaugeFigure::parse(cProperty *property)
 {
     cGroupFigure::parse(property);
 
-    const char *s;
-    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
-            labelOffset = atoi(s);
 
     setBounds(parseBounds(property, getBounds()));
 
     // Set default
     redrawTicks();
 
+    const char *s;
     if ((s = property->getValue(PKEY_BACKGROUND_COLOR)) != nullptr)
         setBackgroundColor(parseColor(s));
     if ((s = property->getValue(PKEY_NEEDLE_COLOR)) != nullptr)
@@ -213,6 +211,8 @@ void LinearGaugeFigure::parse(cProperty *property)
         setCornerRadius(utils::atod(s));
     if ((s = property->getValue(PKEY_INITIAL_VALUE)) != nullptr)
         setValue(0, simTime(), utils::atod(s));
+    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
+            setLabelOffset(atoi(s));
 }
 
 const char **LinearGaugeFigure::getAllowedPropertyKeys() const
@@ -257,6 +257,11 @@ void LinearGaugeFigure::setValue(int series, simtime_t timestamp, double newValu
         value = newValue;
         refresh();
     }
+}
+
+void LinearGaugeFigure::setLabelOffset(int offset)
+{
+    labelOffset = offset;
 }
 
 void LinearGaugeFigure::setTickGeometry(cLineFigure *tick, int index)
