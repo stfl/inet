@@ -51,6 +51,7 @@ static const char *PKEY_POS = "pos";
 static const char *PKEY_SIZE = "size";
 static const char *PKEY_ANCHOR = "anchor";
 static const char *PKEY_BOUNDS = "bounds";
+static const char *PKEY_LABEL_OFFSET = "labelOffset";
 
 inline double zeroToOne(double x) { return x == 0 ? 1 : x; }
 
@@ -191,6 +192,7 @@ void GaugeFigure::parse(cProperty *property)
 {
     cGroupFigure::parse(property);
 
+
     setBounds(parseBounds(property, getBounds()));
 
     // Set default
@@ -218,6 +220,9 @@ void GaugeFigure::parse(cProperty *property)
         setColorStrip(s);
     if ((s = property->getValue(PKEY_INITIAL_VALUE)) != nullptr)
         setValue(0, simTime(), utils::atod(s));
+    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
+        setLabelOffset(atoi(s));
+
 }
 
 const char **GaugeFigure::getAllowedPropertyKeys() const
@@ -228,7 +233,7 @@ const char **GaugeFigure::getAllowedPropertyKeys() const
             PKEY_BACKGROUND_COLOR, PKEY_NEEDLE_COLOR, PKEY_LABEL, PKEY_LABEL_FONT,
             PKEY_LABEL_COLOR, PKEY_MIN_VALUE, PKEY_MAX_VALUE, PKEY_TICK_SIZE,
             PKEY_COLOR_STRIP, PKEY_INITIAL_VALUE, PKEY_POS, PKEY_SIZE, PKEY_ANCHOR,
-            PKEY_BOUNDS, nullptr
+            PKEY_BOUNDS, PKEY_LABEL_OFFSET, nullptr
         };
         concatArrays(keys, cGroupFigure::getAllowedPropertyKeys(), localKeys);
     }
@@ -273,6 +278,11 @@ void GaugeFigure::setValue(int series, simtime_t timestamp, double newValue)
         value = newValue;
         refresh();
     }
+}
+
+void GaugeFigure::setLabelOffset(int offset)
+{
+    labelOffset = offset;
 }
 
 void GaugeFigure::setCurveGeometry(cArcFigure *curve)
@@ -483,7 +493,7 @@ void GaugeFigure::layout()
     valueFigure->setFont(Font("", getBounds().width * FONT_SIZE_PERCENT, 0));
     valueFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height * VALUE_Y_PERCENT));
 
-    labelFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height + 10));
+    labelFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height + labelOffset));
 }
 
 void GaugeFigure::refresh()

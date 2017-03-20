@@ -40,6 +40,7 @@ class INET_API CounterFigure : public cGroupFigure, public inet::IIndicatorFigur
     cTextFigure *labelFigure;
 
     double value = NaN;
+    int labelOffset = 10;
     Anchor anchor = ANCHOR_NW;
 
   protected:

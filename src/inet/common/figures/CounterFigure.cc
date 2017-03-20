@@ -48,6 +48,7 @@ static const char *PKEY_LABEL_COLOR = "labelColor";
 static const char *PKEY_INITIAL_VALUE = "initialValue";
 static const char *PKEY_POS = "pos";
 static const char *PKEY_ANCHOR = "anchor";
+static const char *PKEY_LABEL_OFFSET = "labelOffset";
 
 CounterFigure::CounterFigure(const char *name) : cGroupFigure(name)
 {
@@ -326,6 +327,8 @@ void CounterFigure::parse(cProperty *property)
     setPos(parsePoint(property, PKEY_POS, 0));
 
     const char *s;
+    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
+        labelOffset = atoi(s);
     if ((s = property->getValue(PKEY_BACKGROUND_COLOR)) != nullptr)
         setBackgroundColor(parseColor(s));
     if ((s = property->getValue(PKEY_ANCHOR)) != nullptr)
@@ -361,7 +364,7 @@ const char **CounterFigure::getAllowedPropertyKeys() const
         const char *localKeys[] = {
             PKEY_BACKGROUND_COLOR, PKEY_DECIMAL_PLACES, PKEY_DIGIT_BACKGROUND_COLOR,
             PKEY_DIGIT_BORDER_COLOR, PKEY_DIGIT_FONT, PKEY_DIGIT_COLOR, PKEY_LABEL, PKEY_LABEL_FONT,
-            PKEY_LABEL_COLOR, PKEY_INITIAL_VALUE, PKEY_POS, PKEY_ANCHOR, nullptr
+            PKEY_LABEL_COLOR, PKEY_INITIAL_VALUE, PKEY_POS, PKEY_ANCHOR, PKEY_LABEL_OFFSET, nullptr
         };
         concatArrays(keys, cGroupFigure::getAllowedPropertyKeys(), localKeys);
     }
@@ -385,7 +388,7 @@ void CounterFigure::layout()
         digits[i].text->setPosition(digits[i].bounds->getBounds().getCenter());
     }
 
-    labelFigure->setPosition(Point(bounds.x + bounds.width / 2, bounds.y + bounds.height + 10));
+    labelFigure->setPosition(Point(bounds.x + bounds.width / 2, bounds.y + bounds.height + labelOffset));
 }
 
 void CounterFigure::addChildren()
