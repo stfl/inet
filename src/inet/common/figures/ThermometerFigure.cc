@@ -45,6 +45,7 @@ static const char *PKEY_POS = "pos";
 static const char *PKEY_SIZE = "size";
 static const char *PKEY_ANCHOR = "anchor";
 static const char *PKEY_BOUNDS = "bounds";
+static const char *PKEY_LABEL_OFFSET = "labelOffset";
 
 ThermometerFigure::ThermometerFigure(const char *name) : cGroupFigure(name)
 {
@@ -89,6 +90,11 @@ const char *ThermometerFigure::getLabel() const
 void ThermometerFigure::setLabel(const char *text)
 {
     labelFigure->setText(text);
+}
+
+void ThermometerFigure::setLabelOffset(int offset)
+{
+    labelOffset = offset;
 }
 
 const cFigure::Font& ThermometerFigure::getLabelFont() const
@@ -181,6 +187,8 @@ void ThermometerFigure::parse(cProperty *property)
         setMaxValue(utils::atod(s));
     if ((s = property->getValue(PKEY_INITIAL_VALUE)) != nullptr)
         setValue(0, simTime(), utils::atod(s));
+    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
+        setLabelOffset(atoi(s));
 }
 
 const char **ThermometerFigure::getAllowedPropertyKeys() const
@@ -190,7 +198,7 @@ const char **ThermometerFigure::getAllowedPropertyKeys() const
         const char *localKeys[] = {
             PKEY_MERCURY_COLOR, PKEY_LABEL, PKEY_LABEL_FONT,
             PKEY_LABEL_COLOR, PKEY_MIN_VALUE, PKEY_MAX_VALUE, PKEY_TICK_SIZE,
-            PKEY_INITIAL_VALUE, PKEY_POS, PKEY_SIZE, PKEY_ANCHOR, PKEY_BOUNDS, nullptr
+            PKEY_INITIAL_VALUE, PKEY_POS, PKEY_SIZE, PKEY_ANCHOR, PKEY_BOUNDS, PKEY_LABEL_OFFSET, nullptr
         };
         concatArrays(keys, cGroupFigure::getAllowedPropertyKeys(), localKeys);
     }
