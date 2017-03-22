@@ -163,13 +163,17 @@ void ThermometerFigure::parse(cProperty *property)
 {
     cGroupFigure::parse(property);
 
+    const char *s;
+    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
+            setLabelOffset(atoi(s));
+
     setBounds(parseBounds(property, getBounds()));
 
 
     // Set default
     redrawTicks();
 
-    const char *s;
+
     if ((s = property->getValue(PKEY_MERCURY_COLOR)) != nullptr)
         setMercuryColor(parseColor(s));
     if ((s = property->getValue(PKEY_LABEL)) != nullptr)
@@ -382,7 +386,7 @@ void ThermometerFigure::layout()
         setNumberGeometry(numberFigures[i], i);
     }
 
-    labelFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height + 10));
+    labelFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height + labelOffset));
 }
 
 void ThermometerFigure::refresh()
