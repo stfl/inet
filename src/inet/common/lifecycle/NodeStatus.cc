@@ -66,6 +66,7 @@ bool NodeStatus::handleOperationStage(LifecycleOperation *operation, int opStage
             ASSERT(getState() == GOING_UP);
             setState(UP);
             EV << node->getFullPath() << " started" << endl;
+            getContainingNode(this)->bubble("Node started");
         }
     }
     else if (dynamic_cast<NodeShutdownOperation *>(operation)) {
@@ -80,6 +81,7 @@ bool NodeStatus::handleOperationStage(LifecycleOperation *operation, int opStage
             ASSERT(getState() == GOING_DOWN);
             setState(DOWN);
             EV << node->getFullPath() << " shut down" << endl;
+            getContainingNode(this)->bubble("Node shut down");
         }
     }
     else if (dynamic_cast<NodeCrashOperation *>(operation)) {
@@ -94,6 +96,7 @@ bool NodeStatus::handleOperationStage(LifecycleOperation *operation, int opStage
             ASSERT(getState() == GOING_DOWN);
             setState(DOWN);
             EV << node->getFullPath() << " crashed" << endl;
+            getContainingNode(this)->bubble("Node crashed");
         }
     }
     return true;
