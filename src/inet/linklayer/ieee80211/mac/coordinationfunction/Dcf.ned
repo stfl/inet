@@ -47,7 +47,6 @@ module Dcf
 
         @class(Dcf);
         @display("i=block/queue");
-        @signal[NF_LINK_BREAK](type=Ieee80211DataOrMgmtFrame);
 
     submodules:
         channelAccess: Dcaf {

@@ -281,7 +281,6 @@ void Dcf::originatorProcessFailedFrame(Ieee80211DataOrMgmtFrame* failedFrame)
     if (retryLimitReached) {
         recoveryProcedure->retryLimitReached(failedFrame);
         inProgressFrames->dropFrame(failedFrame);
-        emit(NF_LINK_BREAK, failedFrame);
         delete failedFrame;
     }
     else
