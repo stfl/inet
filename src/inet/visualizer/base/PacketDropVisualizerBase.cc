@@ -22,6 +22,7 @@
 #include "inet/mobility/contract/IMobility.h"
 #include "inet/visualizer/base/PacketDropVisualizerBase.h"
 #include "inet/linklayer/ethernet/EtherMACBase.h"
+#include "inet/common/NotifierConsts.h"
 
 
 namespace inet {
@@ -117,6 +118,8 @@ void PacketDropVisualizerBase::subscribe()
     subscriptionModule->subscribe(PassiveQueueBase::dropPkByQueueSignal, this);
     subscriptionModule->subscribe(EtherMACBase::dropPkIfaceDownSignal, this);
     subscriptionModule->subscribe(EtherMACBase::dropPkFromHLIfaceDownSignal, this);
+    subscriptionModule->subscribe(NF_PACKET_DROP, this);
+
 }
 
 void PacketDropVisualizerBase::unsubscribe()
@@ -129,6 +132,7 @@ void PacketDropVisualizerBase::unsubscribe()
         subscriptionModule->unsubscribe(PassiveQueueBase::dropPkByQueueSignal, this);
         subscriptionModule->unsubscribe(EtherMACBase::dropPkIfaceDownSignal, this);
         subscriptionModule->unsubscribe(EtherMACBase::dropPkFromHLIfaceDownSignal, this);
+        subscriptionModule->unsubscribe(NF_PACKET_DROP, this);
     }
 }
 

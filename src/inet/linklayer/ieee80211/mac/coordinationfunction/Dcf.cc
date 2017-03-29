@@ -85,7 +85,7 @@ void Dcf::processUpperFrame(Ieee80211DataOrMgmtFrame* frame)
     }
     else {
         EV_INFO << "Frame " << frame->getName() << " has been dropped because the PendingQueue is full." << endl;
-        mac->emit(NF_PACKET_DROP, frame);
+        emit(NF_PACKET_DROP, frame);
         delete frame;
     }
 }
@@ -220,10 +220,10 @@ void Dcf::originatorProcessRtsProtectionFailed(Ieee80211DataOrMgmtFrame* protect
     EV_INFO << "RTS frame transmission failed\n";
     recoveryProcedure->rtsFrameTransmissionFailed(protectedFrame, stationRetryCounters);
     if (recoveryProcedure->isRtsFrameRetryLimitReached(protectedFrame)) {
-        mac->emit(NF_LINK_BREAK, protectedFrame);
+        emit(NF_LINK_BREAK, protectedFrame);
         recoveryProcedure->retryLimitReached(protectedFrame);
         inProgressFrames->dropFrame(protectedFrame);
-        mac->emit(NF_PACKET_DROP, protectedFrame);
+        emit(NF_PACKET_DROP, protectedFrame);
         delete protectedFrame;
     }
 }
@@ -282,10 +282,10 @@ void Dcf::originatorProcessFailedFrame(Ieee80211DataOrMgmtFrame* failedFrame)
     }
     ackHandler->processFailedFrame(failedFrame);
     if (retryLimitReached) {
-        mac->emit(NF_LINK_BREAK, failedFrame);
+        emit(NF_LINK_BREAK, failedFrame);
         recoveryProcedure->retryLimitReached(failedFrame);
         inProgressFrames->dropFrame(failedFrame);
-        mac->emit(NF_PACKET_DROP, failedFrame);
+        emit(NF_PACKET_DROP, failedFrame);
         delete failedFrame;
     }
     else
