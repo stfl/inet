@@ -324,9 +324,12 @@ void CounterFigure::parse(cProperty *property)
 {
     cGroupFigure::parse(property);
 
+    const char *s;
+    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
+            setLabelOffset(atoi(s));
+
     setPos(parsePoint(property, PKEY_POS, 0));
 
-    const char *s;
     if ((s = property->getValue(PKEY_BACKGROUND_COLOR)) != nullptr)
         setBackgroundColor(parseColor(s));
     if ((s = property->getValue(PKEY_ANCHOR)) != nullptr)
@@ -351,8 +354,6 @@ void CounterFigure::parse(cProperty *property)
         setLabelColor(parseColor(s));
     if ((s = property->getValue(PKEY_INITIAL_VALUE)) != nullptr)
         setValue(0, simTime(), utils::atod(s));
-    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
-            setLabelOffset(atoi(s));
 
     refresh();
 }

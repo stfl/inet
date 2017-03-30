@@ -46,6 +46,7 @@ static const char *PKEY_POS = "pos";
 static const char *PKEY_SIZE = "size";
 static const char *PKEY_ANCHOR = "anchor";
 static const char *PKEY_BOUNDS = "bounds";
+static const char *PKEY_LABEL_OFFSET = "labelOffset";
 
 PlotFigure::PlotFigure(const char *name) : cGroupFigure(name)
 {
@@ -166,6 +167,11 @@ void PlotFigure::setLabel(const char *text)
     labelFigure->setText(text);
 }
 
+void PlotFigure::setLabelOffset(int offset)
+{
+    labelOffset = offset;
+}
+
 const cFigure::Font& PlotFigure::getLabelFont() const
 {
     return labelFigure->getFont();
@@ -190,9 +196,12 @@ void PlotFigure::parse(cProperty *property)
 {
     cGroupFigure::parse(property);
 
+    const char *s;
+    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
+                setLabelOffset(atoi(s));
+
     setBounds(parseBounds(property, getBounds()));
 
-    const char *s;
     if ((s = property->getValue(PKEY_BACKGROUND_COLOR)) != nullptr)
         setBackgroundColor(parseColor(s));
     if ((s = property->getValue(PKEY_VALUE_TICK_SIZE)) != nullptr)
@@ -225,7 +234,7 @@ const char **PlotFigure::getAllowedPropertyKeys() const
             PKEY_VALUE_TICK_SIZE, PKEY_TIME_WINDOW, PKEY_TIME_TICK_SIZE,
             PKEY_LINE_COLOR, PKEY_MIN_VALUE, PKEY_MAX_VALUE, PKEY_BACKGROUND_COLOR,
             PKEY_LABEL, PKEY_LABEL_COLOR, PKEY_LABEL_FONT, PKEY_POS, PKEY_SIZE,
-            PKEY_ANCHOR, PKEY_BOUNDS, nullptr
+            PKEY_ANCHOR, PKEY_BOUNDS, PKEY_LABEL_OFFSET, nullptr
         };
         concatArrays(keys, cGroupFigure::getAllowedPropertyKeys(), localKeys);
     }
@@ -262,7 +271,7 @@ void PlotFigure::layout()
 
     Rectangle b = getBounds();
     double fontSize = timeTicks.size() > 0 && timeTicks[0].number ? timeTicks[0].number->getFont().pointSize : 12;
-    labelFigure->setPosition(Point(b.getCenter().x, b.y + b.height + fontSize * LABEL_Y_DISTANCE_FACTOR));
+    labelFigure->setPosition(Point(b.getCenter().x, b.y + b.height + fontSize * LABEL_Y_DISTANCE_FACTOR + labelOffset));
 }
 
 void PlotFigure::redrawValueTicks()

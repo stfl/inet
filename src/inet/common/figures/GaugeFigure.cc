@@ -192,13 +192,14 @@ void GaugeFigure::parse(cProperty *property)
 {
     cGroupFigure::parse(property);
 
+    const char *s;
+    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
+        setLabelOffset(atoi(s));
 
     setBounds(parseBounds(property, getBounds()));
 
     // Set default
     redrawTicks();
-
-    const char *s;
     if ((s = property->getValue(PKEY_BACKGROUND_COLOR)) != nullptr)
         setBackgroundColor(parseColor(s));
     if ((s = property->getValue(PKEY_NEEDLE_COLOR)) != nullptr)
@@ -220,8 +221,6 @@ void GaugeFigure::parse(cProperty *property)
         setColorStrip(s);
     if ((s = property->getValue(PKEY_INITIAL_VALUE)) != nullptr)
         setValue(0, simTime(), utils::atod(s));
-    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
-        setLabelOffset(atoi(s));
 
 }
 
