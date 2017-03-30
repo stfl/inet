@@ -779,7 +779,7 @@ void EtherMAC::frameReceptionComplete()
     Packet *packet = decapsulate(check_and_cast<EtherPhyFrame *>(msg));
     emit(packetReceivedFromLowerSignal, packet);
 
-    if (hasBitError) {
+    if (hasBitError || !isValidEthPacket(packet)) {
         numDroppedBitError++;
         emit(dropPkBitErrorSignal, packet);
         delete packet;
