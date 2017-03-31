@@ -30,7 +30,7 @@ network InstrumentsExample
         @statistic[thermometer](source=signalSourceOutput; record=figure; targetFigure=thermometer);
 
         @figure[image](type=indexedImage; pos=240,280; size=16,16; images=status/off,status/green,status/red);
-        @statistic[image](source=xx.wla.ad.signalSourceOutput; record=figure; targetFigure=image); // note: indexedImage takes the value modulo the number of images
+        @statistic[image](source=signalSourceOutput; record=figure; targetFigure=image); // note: indexedImage takes the value modulo the number of images
 
         //@figure[plot](type=plot; pos=420,270; size=200,100);
         //@statistic[plot](source=signalSourceOutput; record=figure; targetFigure=plot);
