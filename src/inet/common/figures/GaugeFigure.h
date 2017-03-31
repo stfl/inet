@@ -57,7 +57,6 @@ class INET_API GaugeFigure : public cGroupFigure, public inet::IIndicatorFigure
     void setNumberGeometry(cTextFigure *number, int index);
     void setNeedleGeometry();
     void setNeedleTransform();
-    void setLabelOffset(int);
 
     void redrawTicks();
     void redrawCurves();
@@ -81,6 +80,9 @@ class INET_API GaugeFigure : public cGroupFigure, public inet::IIndicatorFigure
 
     const char *getLabel() const;
     void setLabel(const char *text);
+
+    const int getLabelOffset() const;
+    void setLabelOffset(int offset);
 
     const Font& getLabelFont() const;
     void setLabelFont(const Font& font);
