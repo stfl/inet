@@ -159,6 +159,19 @@ void CounterFigure::setLabel(const char *text)
     labelFigure->setText(text);
 }
 
+const int CounterFigure::getLabelOffset() const
+{
+    return labelOffset;
+}
+
+void CounterFigure::setLabelOffset(int offset)
+{
+    if(labelOffset != offset)   {
+        labelOffset = offset;
+        labelFigure->setPosition(Point(backgroundFigure->getBounds().x + backgroundFigure->getBounds().width / 2, backgroundFigure->getBounds().y + backgroundFigure->getBounds().height + labelOffset));
+    }
+}
+
 const cFigure::Font& CounterFigure::getLabelFont() const
 {
     return labelFigure->getFont();
@@ -325,8 +338,6 @@ void CounterFigure::parse(cProperty *property)
     cGroupFigure::parse(property);
 
     const char *s;
-    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
-            setLabelOffset(atoi(s));
 
     setPos(parsePoint(property, PKEY_POS, 0));
 
@@ -348,6 +359,8 @@ void CounterFigure::parse(cProperty *property)
         setDigitColor(parseColor(s));
     if ((s = property->getValue(PKEY_LABEL)) != nullptr)
         setLabel(s);
+    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
+            setLabelOffset(atoi(s));
     if ((s = property->getValue(PKEY_LABEL_FONT)) != nullptr)
         setLabelFont(parseFont(s));
     if ((s = property->getValue(PKEY_LABEL_COLOR)) != nullptr)
@@ -416,11 +429,6 @@ void CounterFigure::setValue(int series, simtime_t timestamp, double newValue)
         value = newValue;
         refresh();
     }
-}
-
-void CounterFigure::setLabelOffset(int offset)
-{
-    labelOffset = offset;
 }
 
 void CounterFigure::refresh()
