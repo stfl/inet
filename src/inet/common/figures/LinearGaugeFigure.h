@@ -49,7 +49,6 @@ class INET_API LinearGaugeFigure : public cGroupFigure, public inet::IIndicatorF
     void setTickGeometry(cLineFigure *tick, int index);
     void setNumberGeometry(cTextFigure *number, int index);
     void setNeedleGeometry();
-    void setLabelOffset(int);
 
     void redrawTicks();
     void layout();
@@ -72,6 +71,9 @@ class INET_API LinearGaugeFigure : public cGroupFigure, public inet::IIndicatorF
 
     const char *getLabel() const;
     void setLabel(const char *text);
+
+    const int getLabelOffset() const;
+    void setLabelOffset(int offset);
 
     const Font& getLabelFont() const;
     void setLabelFont(const Font& font);

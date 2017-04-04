@@ -107,6 +107,19 @@ void LinearGaugeFigure::setLabel(const char *text)
     labelFigure->setText(text);
 }
 
+const int LinearGaugeFigure::getLabelOffset() const
+{
+    return labelOffset;
+}
+
+void LinearGaugeFigure::setLabelOffset(int offset)
+{
+    if(labelOffset != offset) {
+        labelOffset = offset;
+        labelFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height + labelOffset));
+    }
+}
+
 const cFigure::Font& LinearGaugeFigure::getLabelFont() const
 {
     return labelFigure->getFont();
@@ -184,8 +197,6 @@ void LinearGaugeFigure::parse(cProperty *property)
     cGroupFigure::parse(property);
 
     const char *s;
-    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
-            setLabelOffset(atoi(s));
 
     setBounds(parseBounds(property, getBounds()));
 
@@ -198,6 +209,8 @@ void LinearGaugeFigure::parse(cProperty *property)
         setNeedleColor(parseColor(s));
     if ((s = property->getValue(PKEY_LABEL)) != nullptr)
         setLabel(s);
+    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
+            setLabelOffset(atoi(s));
     if ((s = property->getValue(PKEY_LABEL_FONT)) != nullptr)
         setLabelFont(parseFont(s));
     if ((s = property->getValue(PKEY_LABEL_COLOR)) != nullptr)
@@ -257,11 +270,6 @@ void LinearGaugeFigure::setValue(int series, simtime_t timestamp, double newValu
         value = newValue;
         refresh();
     }
-}
-
-void LinearGaugeFigure::setLabelOffset(int offset)
-{
-    labelOffset = offset;
 }
 
 void LinearGaugeFigure::setTickGeometry(cLineFigure *tick, int index)
