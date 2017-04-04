@@ -244,7 +244,7 @@ const char **PlotFigure::getAllowedPropertyKeys() const
 void PlotFigure::addChildren()
 {
     plotFigure = new cPathFigure("plot");
-    labelFigure = new cLabelFigure("label");
+    labelFigure = new cTextFigure("label");
     backgroundFigure = new cRectangleFigure("bounds");
 
     backgroundFigure->setFilled(true);

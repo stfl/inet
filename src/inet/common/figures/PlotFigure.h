@@ -38,7 +38,7 @@ class INET_API PlotFigure : public cGroupFigure, public inet::IIndicatorFigure
     };
 
     cPathFigure *plotFigure;
-    cLabelFigure *labelFigure;
+    cTextFigure *labelFigure;
     cRectangleFigure *backgroundFigure;
     std::vector<Tick> timeTicks;
     std::vector<Tick> valueTicks;
