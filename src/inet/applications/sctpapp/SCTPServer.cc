@@ -33,6 +33,10 @@ namespace inet {
 
 Define_Module(SCTPServer);
 
+simsignal_t SCTPServer::rcvdDataSignal = registerSignal("rcvdData");
+simsignal_t SCTPServer::rcvdDataDurationSignal = registerSignal("rcvdDataDuration");
+simsignal_t SCTPServer::rcvdNotificationSignal = registerSignal("rcvdNotification");
+
 void SCTPServer::initialize(int stage)
 {
     EV_DEBUG << "initialize SCTP Server stage " << stage << endl;
@@ -329,6 +333,12 @@ void SCTPServer::handleMessage(cMessage *msg)
                 notificationsReceived--;
                 packetsRcvd++;
                 EV_INFO << simTime() << " server: data arrived. " << packetsRcvd << " Packets received now\n";
+                emit(rcvdDataSignal, msg);
+
+                SCTPSimpleMessage *smsg2 = check_and_cast<SCTPSimpleMessage *>(msg);
+                EV_INFO << "Server received packet that traveled " << simTime() - smsg2->getCreationTime() << " from SCTP\n";
+                emit(rcvdDataDurationSignal, simTime() - smsg2->getCreationTime());
+
                 SCTPRcvInfo *ind = check_and_cast<SCTPRcvInfo *>(msg->removeControlInfo());
                 id = ind->getAssocId();
                 auto j = serverAssocStatMap.find(id);

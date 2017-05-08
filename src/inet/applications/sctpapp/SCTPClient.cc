@@ -38,6 +38,7 @@ Define_Module(SCTPClient);
 simsignal_t SCTPClient::sentPkSignal = registerSignal("sentPk");
 simsignal_t SCTPClient::rcvdPkSignal = registerSignal("rcvdPk");
 simsignal_t SCTPClient::echoedPkSignal = registerSignal("echoedPk");
+simsignal_t SCTPClient::rcvdPkDuration = registerSignal("rcvdPkDuration");
 
 SCTPClient::SCTPClient()
 {
@@ -109,6 +110,7 @@ void SCTPClient::initialize(int stage)
         // parameters
         const char *addressesString = par("localAddress");
         AddressVector addresses = L3AddressResolver().resolve(cStringTokenizer(addressesString).asVector());
+        // AddressVector addresses = L3AddressResolver().resolve(cStringTokenizer(addressesString).asVector());
         int port = par("localPort");
         socket.setOutputGate(gate("sctpOut"));
         if (addresses.size() == 0)
@@ -327,6 +329,10 @@ void SCTPClient::socketDataArrived(int, void *, cPacket *msg, bool)
     SCTPCommand *ind = check_and_cast<SCTPCommand *>(msg->removeControlInfo());
     emit(rcvdPkSignal, msg);
     bytesRcvd += msg->getByteLength();
+    
+    simtime_t duration = msg->getDuration();
+    EV_INFO << "Client received packet that traveled " << duration << " from SCTP\n";
+    emit(rcvdPkDuration, duration);
 
     if (echo) {
         SCTPSimpleMessage *smsg = check_and_cast<SCTPSimpleMessage *>(msg);

@@ -82,6 +82,7 @@ class INET_API SCTPClient : public cSimpleModule, public SCTPSocket::CallbackInt
     static simsignal_t sentPkSignal;
     static simsignal_t rcvdPkSignal;
     static simsignal_t echoedPkSignal;
+    static simsignal_t rcvdPkDuration;
 
   protected:
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }

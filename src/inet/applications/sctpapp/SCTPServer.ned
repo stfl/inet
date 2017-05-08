@@ -45,6 +45,13 @@ simple SCTPServer like ISCTPApp
         double prValue = default(0); //for PR-SCTP
         bool streamReset = default(false);
         string streamPriorities = default("");
+
+        @signal[rcvdData](type=cMessage);
+        @signal[rcvdDataDuration](type=simtime_t);
+        @signal[rcvdNotification](type=cMessage);
+        @statistic[rcvdData](title="data packet received"; source=rcvdData; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        @statistic[rcvdNotification](title="notification packet received"; source=rcvdNotification; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        @statistic[rcvdDataDuration](title="duration data packet traveled"; source=rcvdDataDuration; record=vector,histogram; interpolationmode=none);
     gates:
         input sctpIn;
         output sctpOut;

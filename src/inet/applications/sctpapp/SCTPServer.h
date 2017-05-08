@@ -82,6 +82,9 @@ class INET_API SCTPServer : public cSimpleModule, public ILifecycle
     unsigned long int numRequestsToSend;    // requests to send in this session
     BytesPerAssoc bytesPerAssoc;
     ServerAssocStatMap serverAssocStatMap;
+    static simsignal_t rcvdDataSignal;
+    static simsignal_t rcvdDataDurationSignal;
+    static simsignal_t rcvdNotificationSignal;
 
   protected:
     virtual void initialize(int stage) override;
