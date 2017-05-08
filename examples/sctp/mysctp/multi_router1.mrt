@@ -15,6 +15,7 @@ name: ppp3  inet_addr: 10.2.2.253 MTU: 1500   Metric: 1  POINTTOPOINT MULTICAST
 
 ifconfigend.
 
+# Destination  Gateway  Netmask  Flags  Metric Interface
 route:
 10.1.1.1     10.1.1.1        255.255.255.255   H   0   ppp0
 10.2.1.1     10.2.1.1        255.255.255.255   H   0   ppp1

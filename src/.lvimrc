@@ -1,0 +1,25 @@
+
+let g:neomake_cpp_enabled_makers = ['clangcheck']
+let g:neomake_cpp_clangcheck_args = ['%:p',
+         \ '-p', g:localvimrc_script_dir.'/..',
+         \ ]
+         " 'extra-arg="-Werror -Wall"',
+
+let g:neomake_enabled_makers = ['inet']
+let g:neomake_inet_maker = {
+         \ 'exe' : 'make',
+         \ 'cwd' : g:localvimrc_script_dir.'/..',
+         \ }
+         " \ 'errorformat' : '%-G%f:%s:,%-G%f:%l: %#error: %#(Each undeclared identifier is reported only%.%#,%-G%f:%l: %#error: %#for each function it appears%.%#,%-GIn file included%.%#,%-G %#from %f:%l\,,%f:%l:%c: %trror: %m,%f:%l:%c: %tarning: %m,%I%f:%l:%c: note: %m,%f:%l:%c: %m,%f:%l: %trror: %m,%f:%l: %tarning: %m,%I%f:%l: note: %m,%f:%l: %m'
+
+" add compile_commands.json to deoplete-clang completion
+let g:deoplete#sources#clang#clang_complete_database = g:localvimrc_script_dir.'/..'
+
+
+" make vim not confuse cpp/c
+augroup InetProject
+   autocmd!
+   autocmd BufWritePost *.cc,*.h Neomake! inet
+   " autocmd User NeomakeFinished call OnNeomakeFinished()
+augroup END
+
