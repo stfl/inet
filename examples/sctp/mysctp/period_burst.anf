@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
+  <inputs>
+    <inputs name="/inet/examples/sctp/mysctp/results/period_burst-*.vec"/>
+    <inputs name="/inet/examples/sctp/mysctp/results/period_burst-*.sca"/>
+    <inputs name="/inet/examples/sctp/mysctp/results/period_burst_bs-#0.sca"/>
+    <inputs name="/inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec"/>
+    <inputs name="/inet/examples/sctp/mysctp/results/period_burst_cmt-#0.sca"/>
+    <inputs name="/inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec"/>
+  </inputs>
+  <datasets>
+    <datasets name="End to End Delay">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_server.sctp) AND name(&quot;End to End Delay*&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Group" name="End to End Delay">
+        <items xsi:type="scave:Apply" operation="multiply-by">
+          <params name="a" value="1000.0"/>
+        </items>
+        <items xsi:type="scave:LineChart" name="End to End Delay" lineNameFormat="">
+          <properties name="Y.Axis.Title" value="delay [ms]"/>
+        </items>
+      </items>
+    </datasets>
+    <datasets name="Send Queue SCTP">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.sctp) AND name(&quot;Queued Sent Bytes*:Total&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Group" name="Send Queue SCTP">
+        <items xsi:type="scave:Apply" operation="divide-by">
+          <params name="a" value="1400.0"/>
+        </items>
+        <items xsi:type="scave:LineChart" name="Send Queue SCTP" lineNameFormat=""/>
+      </items>
+    </datasets>
+    <datasets name="Congestion Windows">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.sctp) AND name(&quot;Congestion Window*&quot;) AND NOT attr:configname(&quot;period_burst_rp&quot;)  " type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="multihomed.sctp_client.sctp" lineNameFormat="">
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 Congestion Window 6:10.1.3.1 period_burst" value="Single Homed CWND Path 1"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 Congestion Window 12:10.1.3.1 period_burst_bs" value="CMT Buffer Split CWND Path 1"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 Congestion Window 12:10.2.3.1 period_burst_bs" value="CMT Buffer Split CWND Path 2"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 Congestion Window 4:10.1.3.1 period_burst_cmt" value="CMT CWND Path 1"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 Congestion Window 4:10.2.3.1 period_burst_cmt" value="CMT CWND Path 2"/>
+        <properties name="Line.Display//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 Congestion Window 6:10.2.3.1 period_burst" value="false"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 Congestion Window 12:10.2.3.1 period_burst_bs" value="#439FC5"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 Congestion Window 4:10.1.3.1 period_burst_cmt" value="#E12F2F"/>
+      </items>
+    </datasets>
+    <datasets name="pk from HL (ppp client)">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.ppp[0].ppp) AND name(&quot;rcvdPkFromHL:vector(packetBytes)&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.ppp[1].ppp) AND name(&quot;rcvdPkFromHL:vector(packetBytes)&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Group" name="rcvdPkFromHL:vector(packetBytes)">
+        <items xsi:type="scave:Apply" operation="integrate"/>
+        <items xsi:type="scave:LineChart" name="rcvdPkFromHL:vector(packetBytes)"/>
+      </items>
+    </datasets>
+    <datasets name="RX packetBytes">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_server.sctpApp[0]) AND name(&quot;rcvdData:vector(packetBytes)&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Group" name="rcvdData:vector(packetBytes) multihomed.sctp_server.sctpApp[0]">
+        <items xsi:type="scave:Apply" operation="sum"/>
+        <items xsi:type="scave:Apply" operation="divide-by">
+          <params name="a" value="1400.0"/>
+        </items>
+        <items xsi:type="scave:LineChart" name="Server received Data" lineNameFormat=""/>
+      </items>
+    </datasets>
+    <datasets name="Outstanding Bytes Total">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.sctp) AND name(&quot;Outstanding Bytes*:Total&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Group" name="Outstanding Bytes Total">
+        <items xsi:type="scave:Apply" operation="divide-by">
+          <params name="a" value="1400.0"/>
+        </items>
+        <items xsi:type="scave:LineChart" name="Outstanding Bytes Total"/>
+      </items>
+    </datasets>
+    <datasets name="Bandwidth client">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.sctp) AND name(&quot;Bandwidth*&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="Bandwidth" lineNameFormat="">
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 Bandwidth 6:10.2.3.1 period_burst" value="#14EB29"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 Bandwidth 12:10.2.3.1 period_burst_bs" value="#4492E9"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 Bandwidth 4:10.1.3.1 period_burst_cmt" value="#EFCE4A"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 Bandwidth 6:10.1.3.1 period_burst" value="Single Homed Bandwidth Path 1"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 Bandwidth 12:10.1.3.1 period_burst_bs" value="CMT Buffer Split Bandwidth Path 1"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 Bandwidth 4:10.1.3.1 period_burst_cmt" value="CMT Bandwidth Path 1"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 Bandwidth 6:10.2.3.1 period_burst" value="Single Homed Bandwidth Path 2"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 Bandwidth 12:10.2.3.1 period_burst_bs" value="CMT Buffer Split Bandwidth Path 2"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 Bandwidth 4:10.2.3.1 period_burst_cmt" value="CMT Bandwidth Path 2"/>
+      </items>
+    </datasets>
+    <datasets name="Queue Length ppp">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.ppp[*].queue) AND name(queueLength:vector)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="queue Length ppp" lineNameFormat="">
+        <properties name="Line.Display//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 multihomed.sctp_client.ppp[1].queue period_burst" value="false"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 multihomed.sctp_client.ppp[0].queue period_burst" value="Single Homed Queue ppp 1"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 multihomed.sctp_client.ppp[0].queue period_burst_bs" value="CMT BS Queue ppp 1"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 multihomed.sctp_client.ppp[1].queue period_burst_bs" value="CMT BS Queue ppp 2"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 multihomed.sctp_client.ppp[0].queue period_burst_cmt" value="CMT Queue ppp 1"/>
+        <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 multihomed.sctp_client.ppp[1].queue period_burst_cmt" value="CMT Queue ppp 2"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 multihomed.sctp_client.ppp[1].queue period_burst_bs" value="dodgerBlue"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 multihomed.sctp_client.ppp[0].queue period_burst_cmt" value="#F92323"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-05:31:57-69986 multihomed.sctp_client.ppp[0].queue period_burst_cmt" value="red"/>
+      </items>
+    </datasets>
+    <datasets name="Number of Gap Acked">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.sctp) AND name(&quot;Number of Gap Acked Chunks in Last SACK*&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Group" name="Number of Gap Acked Chunks in Last SACK 4:10.1.3.1 multihomed.sctp_client.sctp">
+        <items xsi:type="scave:Apply" operation="sum"/>
+        <items xsi:type="scave:LineChart" name="Number of Gap Acked Chunks in Last SACK 4:10.1.3.1 multihomed.sctp_client.sctp" lineNameFormat="">
+          <properties name="Line.Display/period_burst-0-20170515-06:04:34-90205 sum(Number of Gap Acked Chunks in Last SACK 6:10.2.3.1) period_burst" value="false"/>
+          <properties name="Line.Color/period_burst_bs-0-20170515-06:05:01-90205 sum(Number of Gap Acked Chunks in Last SACK 12:10.2.3.1) period_burst_bs" value="#77B2CD"/>
+          <properties name="Line.Color/period_burst_cmt-0-20170516-04:44:47-51850 sum(Number of Gap Acked Chunks in Last SACK 4:10.1.3.1) period_burst_cmt" value="red"/>
+        </items>
+      </items>
+    </datasets>
+    <datasets name="RTT">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.sctp) AND name(&quot;RTT*&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="RTT" lineNameFormat="">
+        <properties name="Line.Display//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 RTT 6:10.2.3.1 period_burst" value="false"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 RTT 6:10.1.3.1 period_burst" value="#008000"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 RTT 12:10.1.3.1 period_burst_bs" value="blue"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 RTT 12:10.2.3.1 period_burst_bs" value="dodgerBlue"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 RTT 4:10.1.3.1 period_burst_cmt" value="red"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 RTT 4:10.2.3.1 period_burst_cmt" value="orange"/>
+      </items>
+    </datasets>
+    <datasets name="queueingTime ppp">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.ppp[*].queue) AND name(queueingTime:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Group" name="queueingTime: ppp">
+        <items xsi:type="scave:Apply" operation="multiply-by">
+          <params name="a" value="1000"/>
+        </items>
+        <items xsi:type="scave:LineChart" name="queueingTime: ppp" lineNameFormat="">
+          <properties name="Y.Axis.Title" value="[ms]"/>
+          <properties name="Line.Display//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 multihomed.sctp_client.ppp[1].queue period_burst" value="false"/>
+          <properties name="Line.Display/period_burst-0-20170515-06:04:34-90205 multihomed.sctp_client.ppp[1].queue period_burst" value="false"/>
+          <properties name="Line.Color/period_burst_bs-0-20170515-06:05:01-90205 multihomed.sctp_client.ppp[1].queue period_burst_bs" value="dodgerBlue"/>
+          <properties name="Line.Color/period_burst_cmt-0-20170516-05:31:57-69986 multihomed.sctp_client.ppp[0].queue period_burst_cmt" value="red"/>
+        </items>
+      </items>
+    </datasets>
+    <datasets name="ppp received from upper layer">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.ppp[*].ppp) AND name(&quot;rcvdPkFromHL:vector(packetBytes)&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Group" name="rcvdPkFromHL:vector(packetBytes) multihomed.sctp_client.ppp[0].ppp">
+        <items xsi:type="scave:Apply" operation="sum"/>
+        <items xsi:type="scave:Apply" operation="divide-by">
+          <params name="a" value="1400.0"/>
+        </items>
+        <items xsi:type="scave:LineChart" name="ppp received from upper layer" lineNameFormat="">
+          <properties name="Line.Display/period_burst-0-20170515-06:04:34-90205 multihomed.sctp_client.ppp[1].ppp period_burst" value="false"/>
+          <properties name="Line.Color/period_burst_bs-0-20170515-06:05:01-90205 multihomed.sctp_client.ppp[1].ppp period_burst_bs" value="dodgerBlue"/>
+          <properties name="Line.Color/period_burst_cmt-0-20170516-05:31:57-69986 multihomed.sctp_client.ppp[0].ppp period_burst_cmt" value="red"/>
+        </items>
+      </items>
+    </datasets>
+  </datasets>
+  <chartSheets/>
+</scave:Analysis>

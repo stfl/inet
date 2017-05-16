@@ -7,9 +7,9 @@ name: ppp1  inet_addr: 10.2.1.1   Mask: 255.255.255.0 MTU: 1500   Metric: 1  POI
 ifconfigend.
 
 route:
-# Destination  Gateway     Netmask      Flags  Metric Interface
-10.1.0.0		   *	         255.255.0.0  G	     0	   ppp0
-10.2.0.0		   *	         255.255.0.0  G	     0      ppp1
+
+10.1.0.0		10.1.1.254			255.255.0.0  	G	0	ppp0
+10.2.0.0		10.2.1.254			255.255.0.0  	G	0   ppp1
 
 routeend.
 

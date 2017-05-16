@@ -39,6 +39,7 @@ simsignal_t SCTPClient::sentPkSignal = registerSignal("sentPk");
 simsignal_t SCTPClient::rcvdPkSignal = registerSignal("rcvdPk");
 simsignal_t SCTPClient::echoedPkSignal = registerSignal("echoedPk");
 simsignal_t SCTPClient::rcvdPkDuration = registerSignal("rcvdPkDuration");
+simsignal_t SCTPClient::chunksAbandonedSig = registerSignal("chunksAbandonedSig");
 
 SCTPClient::SCTPClient()
 {
@@ -623,11 +624,11 @@ void SCTPClient::sendqueueAbatedArrived(int assocId, unsigned long int buffer)
         else
             sendRequest(false);
 
-        if (!timer && (--numRequestsToSend == 0))
+        if (!timer && (--numRequestsToSend <= 0))
             sendAllowed = false;
     }
 
-    if ((!timer && numRequestsToSend == 0) && par("waitToClose").doubleValue() == 0) {
+    if ((!timer && numRequestsToSend <= 0) && par("waitToClose").doubleValue() == 0) {
         EV_INFO << "socketEstablished:no more packets to send, call shutdown\n";
         socket.shutdown();
 

@@ -51,40 +51,55 @@ network multihomed
                 pppg[2];
 
         }
-//        router1: Router {
-//            parameters:
-//                networkLayer.configurator.networkConfiguratorModule = "";
-//                @display("p=188,77;i=abstract/router");
-//            gates:
-//                pppg[4];
-//        }
-//        router2: Router {
-//            parameters:
-//                networkLayer.configurator.networkConfiguratorModule = "";
-//                @display("p=323,75;i=abstract/router");
-//            gates:
-//                pppg[4];
-//        }
+        router1: Router {
+            parameters:
+                networkLayer.configurator.networkConfiguratorModule = "";
+                @display("p=188,77;i=abstract/router");
+            gates:
+                pppg[4];
+        }
+        router2: Router {
+            parameters:
+                networkLayer.configurator.networkConfiguratorModule = "";
+                @display("p=323,75;i=abstract/router");
+            gates:
+                pppg[4];
+        }
     connections:	
-        sctp_client.pppg[0] <--> NormalPath <--> sctp_server.pppg[0];
-        sctp_client.pppg[1] <--> BottlePath <--> sctp_server.pppg[1];
-//        router1.pppg[2] <--> BottlePath <--> router2.pppg[0];
-//        router1.pppg[3] <--> BottlePath <--> router2.pppg[1];
-//        router2.pppg[2] <--> NormalPath <--> sctp_server.pppg[0];
-//        router2.pppg[3] <--> NormalPath <--> sctp_server.pppg[1];
+        sctp_client.pppg[0] <--> LTEPath <--> router1.pppg[0];
+        sctp_client.pppg[1] <--> LTEPath_slow <--> router1.pppg[1];
+        router1.pppg[2] <--> NormalPath <--> router2.pppg[0];
+        router1.pppg[3] <--> NormalPath <--> router2.pppg[1];
+        router2.pppg[2] <--> FastPath <--> sctp_server.pppg[0];
+        router2.pppg[3] <--> FastPath <--> sctp_server.pppg[1];
 }
 
-channel BottlePath extends DatarateChannel
+channel LTEPath extends DatarateChannel
 {
-   parameters:
-      delay = 10ms;
-      datarate = 10Mbps;
-      // per = 0.005;   // packet error rate
+    parameters:
+        delay = 20ms;
+        datarate = 3Mbps;
+}
+
+channel LTEPath_slow extends DatarateChannel
+{
+    parameters:
+        delay = 20ms;
+        datarate = 1Mbps;
 }
 
 channel NormalPath extends DatarateChannel
 {
-    parameters:
-        delay = 10ms;
-        datarate = 30Mbps;
+   parameters:
+      delay = 10ms;
+      datarate = 20Mbps;
+      // per = 0.005;   // packet error rate
 }
+
+channel FastPath extends DatarateChannel
+{
+    parameters:
+        delay = 2ms;
+        datarate = 1Gbps;
+}
+
