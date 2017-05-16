@@ -574,18 +574,6 @@ void SCTPAssociation::cwndUpdateAfterSack()
                 }
             }
         }
-
-        // char signalName[32];
-        // sprintf(signalName, "assoc%d-path%d-cwndUpdate", assocId, );
-        // simsignal_t signal = registerSignal(signalName);
-
-        // char statisticName[32];
-        // sprintf(statisticName, "session%d-jitter", sessionNum);
-        // cProperty *statisticTemplate =
-        //    getProperties()->get("statisticTemplate", "sessionJitter");
-        // getEnvir()->addResultRecorders(this, signal, statisticName, statisticTemplate);
-
-        // emit(path*-cwndUpdate, path->cwnd);
     }
 }
 
@@ -643,7 +631,7 @@ void SCTPAssociation::cwndUpdateBytesAcked(SCTPPathVariables *path,
             // ------ Increase Congestion Window -------------------------------
             if ((ctsnaAdvanced == true) &&
                 ((path->outstandingBytesBeforeUpdate >= path->cwnd) ||
-                 (state->strictCwndBooking) )) // && (path->outstandingBytesBeforeUpdate + path->pmtu > path->cwnd))))
+                 ((state->strictCwndBooking) && (path->outstandingBytesBeforeUpdate + path->pmtu > path->cwnd))))
             {
                 EV_INFO << assocId << ": " << simTime() << ":\tCC [cwndUpdateBytesAcked-SlowStart]\t" << path->remoteAddress
                         << " (cmtCCGroup=" << path->cmtCCGroup << ")"
