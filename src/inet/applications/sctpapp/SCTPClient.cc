@@ -357,64 +357,66 @@ void SCTPClient::socketDataArrived(int, void *, cPacket *msg, bool)
 
 void SCTPClient::sendRequest(bool last)
 {
-    // find next stream
-    unsigned int nextStream = 0;
-    for (unsigned int i = 0; i < outStreams; i++) {
-        if (streamRequestRatioSendMap[i] > streamRequestRatioSendMap[nextStream])
-            nextStream = i;
-    }
-
-    // no stream left, reset map
-    if (nextStream == 0 && streamRequestRatioSendMap[nextStream] == 0) {
+    for (int i=0; i < (int)par("numPacketsPerRequest"); i++) {
+        // find next stream
+        unsigned int nextStream = 0;
         for (unsigned int i = 0; i < outStreams; i++) {
-            streamRequestRatioSendMap[i] = streamRequestRatioMap[i];
             if (streamRequestRatioSendMap[i] > streamRequestRatioSendMap[nextStream])
                 nextStream = i;
         }
+
+        // no stream left, reset map
+        if (nextStream == 0 && streamRequestRatioSendMap[nextStream] == 0) {
+            for (unsigned int i = 0; i < outStreams; i++) {
+                streamRequestRatioSendMap[i] = streamRequestRatioMap[i];
+                if (streamRequestRatioSendMap[i] > streamRequestRatioSendMap[nextStream])
+                    nextStream = i;
+            }
+        }
+
+        if (nextStream == 0 && streamRequestRatioSendMap[nextStream] == 0) {
+            throw cRuntimeError("Invalid setting of streamRequestRatio: only 0 weightings");
+        }
+
+        unsigned int sendBytes = streamRequestLengthMap[nextStream];
+        streamRequestRatioSendMap[nextStream]--;
+
+        if (sendBytes < 1)
+            sendBytes = 1;
+
+        cPacket *cmsg = new cPacket("SCTP_C_SEND");
+        SCTPSimpleMessage *msg = new SCTPSimpleMessage("data");
+
+        msg->setDataArraySize(sendBytes);
+
+        for (unsigned int i = 0; i < sendBytes; i++)
+            msg->setData(i, 'a');
+
+        msg->setDataLen(sendBytes);
+        msg->setEncaps(false);
+        msg->setByteLength(sendBytes);
+        msg->setCreationTime(simTime());
+        cmsg->encapsulate(msg);
+        cmsg->setKind(ordered ? SCTP_C_SEND_ORDERED : SCTP_C_SEND_UNORDERED);
+
+        // send SCTPMessage with SCTPSimpleMessage enclosed
+        EV_INFO << "Sending request ..." << endl;
+        bufferSize -= sendBytes;
+
+        if (bufferSize < 0)
+            last = true;
+
+        SCTPSendInfo* sendCommand = new SCTPSendInfo;
+        sendCommand->setLast(last);
+        sendCommand->setPrMethod(par("prMethod"));
+        sendCommand->setPrValue(par("prValue"));
+        sendCommand->setSid(nextStream);
+        cmsg->setControlInfo(sendCommand);
+
+        emit(sentPkSignal, msg);
+        socket.sendMsg(cmsg);
+        bytesSent += sendBytes;
     }
-
-    if (nextStream == 0 && streamRequestRatioSendMap[nextStream] == 0) {
-        throw cRuntimeError("Invalid setting of streamRequestRatio: only 0 weightings");
-    }
-
-    unsigned int sendBytes = streamRequestLengthMap[nextStream];
-    streamRequestRatioSendMap[nextStream]--;
-
-    if (sendBytes < 1)
-        sendBytes = 1;
-
-    cPacket *cmsg = new cPacket("SCTP_C_SEND");
-    SCTPSimpleMessage *msg = new SCTPSimpleMessage("data");
-
-    msg->setDataArraySize(sendBytes);
-
-    for (unsigned int i = 0; i < sendBytes; i++)
-        msg->setData(i, 'a');
-
-    msg->setDataLen(sendBytes);
-    msg->setEncaps(false);
-    msg->setByteLength(sendBytes);
-    msg->setCreationTime(simTime());
-    cmsg->encapsulate(msg);
-    cmsg->setKind(ordered ? SCTP_C_SEND_ORDERED : SCTP_C_SEND_UNORDERED);
-
-    // send SCTPMessage with SCTPSimpleMessage enclosed
-    EV_INFO << "Sending request ..." << endl;
-    bufferSize -= sendBytes;
-
-    if (bufferSize < 0)
-        last = true;
-
-    SCTPSendInfo* sendCommand = new SCTPSendInfo;
-    sendCommand->setLast(last);
-    sendCommand->setPrMethod(par("prMethod"));
-    sendCommand->setPrValue(par("prValue"));
-    sendCommand->setSid(nextStream);
-    cmsg->setControlInfo(sendCommand);
-
-    emit(sentPkSignal, msg);
-    socket.sendMsg(cmsg);
-    bytesSent += sendBytes;
 }
 
 void SCTPClient::handleTimer(cMessage *msg)
@@ -428,10 +430,10 @@ void SCTPClient::handleTimer(cMessage *msg)
         case MSGKIND_SEND:
             if (((!timer && numRequestsToSend > 0) || timer)) {
                 if (sendAllowed) {
-                    sendRequest();
-                    if (!timer)
-                        numRequestsToSend--;
-                }
+                        sendRequest();
+                        if (!timer)
+                            numRequestsToSend--;
+                    }
                 if (par("thinkTime").doubleValue() > 0)
                     scheduleAt(simTime() + par("thinkTime"), timeMsg);
 
@@ -609,6 +611,7 @@ void SCTPClient::sendStreamResetNotification()
 void SCTPClient::msgAbandonedArrived(int assocId)
 {
     chunksAbandoned++;
+    emit(chunksAbandonedSig, (long)chunksAbandoned);
 }
 
 void SCTPClient::sendqueueAbatedArrived(int assocId, unsigned long int buffer)
@@ -650,4 +653,3 @@ void SCTPClient::finish()
 }
 
 } // namespace inet
-

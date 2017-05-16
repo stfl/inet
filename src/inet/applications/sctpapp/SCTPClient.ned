@@ -33,6 +33,7 @@ simple SCTPClient like ISCTPApp
         int connectPort; // port number to connect to
         double startTime @unit(s) = default(1s); // time first session begins
         volatile int numRequestsPerSession = default(1);  // number of requests sent per session
+        volatile int numPacketsPerRequest = default(1);  // number of packets of size requestLength to send per request
         int numPacketsToReceive = default(0);
         int requestLength = default(1452); // length of a request (bytes)
         double thinkTime @unit(s) = default(0s); // time gap between requests
@@ -60,10 +61,12 @@ simple SCTPClient like ISCTPApp
         @signal[rcvdPk](type=cPacket);
         @signal[echoedPk](type=SCTPSimpleMessage);
         @signal[rcvdPkDuration](type=simtime_t);
+        @signal[chunksAbandonedSig](type=long);
         @statistic[rcvdPk](title="packets received"; source=rcvdPk; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
         @statistic[sentPk](title="packets sent"; source=sentPk; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
         @statistic[echoedPk](title="packets echoed"; source=echoedPk; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
         @statistic[rcvdPkDuration](title="duration packet traveled"; source=rcvdPkDuration; record=count,vector,histogram; interpolationmode=none);
+        @statistic[chunksAbandoned](title="Chunks Abandoned"; source=chunksAbandonedSig; record=count,vector; interpolationmode=none);
 
     gates:
         input sctpIn;
