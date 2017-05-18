@@ -68,7 +68,7 @@ network multihomed
     connections:	
         sctp_client.pppg[0] <--> LTEPath <--> router1.pppg[0];
         sctp_client.pppg[1] <--> LTEPath_slow <--> router1.pppg[1];
-        router1.pppg[2] <--> NormalPath <--> router2.pppg[0];
+        router1.pppg[2] <--> NormalPath_slow <--> router2.pppg[0];
         router1.pppg[3] <--> NormalPath <--> router2.pppg[1];
         router2.pppg[2] <--> FastPath <--> sctp_server.pppg[0];
         router2.pppg[3] <--> FastPath <--> sctp_server.pppg[1];
@@ -78,22 +78,31 @@ channel LTEPath extends DatarateChannel
 {
     parameters:
         delay = 20ms;
-        datarate = 3Mbps;
+        datarate = 40Mbps;
+        //per = 0.005;   // packet error rate
 }
 
 channel LTEPath_slow extends DatarateChannel
 {
     parameters:
         delay = 20ms;
-        datarate = 1Mbps;
+        datarate = 20Mbps;
+        //per = 0.005;   // packet error rate
 }
 
 channel NormalPath extends DatarateChannel
 {
    parameters:
-      delay = 10ms;
-      datarate = 20Mbps;
-      // per = 0.005;   // packet error rate
+      delay = 5ms;
+      datarate = 4Mbps;
+
+}
+
+channel NormalPath_slow extends DatarateChannel
+{
+   parameters:
+      delay = 5ms;
+      datarate = 2Mbps;
 }
 
 channel FastPath extends DatarateChannel

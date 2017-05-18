@@ -66,7 +66,7 @@
         <items xsi:type="scave:Apply" operation="divide-by">
           <params name="a" value="1400.0"/>
         </items>
-        <items xsi:type="scave:LineChart" name="Outstanding Bytes Total"/>
+        <items xsi:type="scave:LineChart" name="Outstanding Packets" lineNameFormat=""/>
       </items>
     </datasets>
     <datasets name="Bandwidth client">
@@ -84,7 +84,7 @@
       </items>
     </datasets>
     <datasets name="Queue Length ppp">
-      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.ppp[*].queue) AND name(queueLength:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.ppp[*].queue*) AND name(queueLength:vector)" type="VECTOR"/>
       <items xsi:type="scave:LineChart" name="queue Length ppp" lineNameFormat="">
         <properties name="Line.Display//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 multihomed.sctp_client.ppp[1].queue period_burst" value="false"/>
         <properties name="Line.Name//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 multihomed.sctp_client.ppp[0].queue period_burst" value="Single Homed Queue ppp 1"/>
@@ -112,15 +112,16 @@
       <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.sctp) AND name(&quot;RTT*&quot;)" type="VECTOR"/>
       <items xsi:type="scave:LineChart" name="RTT" lineNameFormat="">
         <properties name="Line.Display//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 RTT 6:10.2.3.1 period_burst" value="false"/>
-        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170515-06:04:34-90205 RTT 6:10.1.3.1 period_burst" value="#008000"/>
-        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 RTT 12:10.1.3.1 period_burst_bs" value="blue"/>
-        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170515-06:05:01-90205 RTT 12:10.2.3.1 period_burst_bs" value="dodgerBlue"/>
-        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 RTT 4:10.1.3.1 period_burst_cmt" value="red"/>
-        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170516-04:44:47-51850 RTT 4:10.2.3.1 period_burst_cmt" value="orange"/>
+        <properties name="Line.Display//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170517-03:43:01-101131 RTT 3:10.2.3.1 period_burst" value="false"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst-#0.vec period_burst-0-20170517-03:43:01-101131 RTT 3:10.1.3.1 period_burst" value="#008000"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170517-03:40:27-99837 RTT 10:10.1.3.1 period_burst_bs" value="blue"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_bs-#0.vec period_burst_bs-0-20170517-03:40:27-99837 RTT 10:10.2.3.1 period_burst_bs" value="dodgerBlue"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170517-03:40:20-99837 RTT 7:10.1.3.1 period_burst_cmt" value="red"/>
+        <properties name="Line.Color//inet/examples/sctp/mysctp/results/period_burst_cmt-#0.vec period_burst_cmt-0-20170517-03:40:20-99837 RTT 7:10.2.3.1 period_burst_cmt" value="orange"/>
       </items>
     </datasets>
     <datasets name="queueingTime ppp">
-      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.ppp[*].queue) AND name(queueingTime:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.ppp[*].queue*) AND name(queueingTime:vector)" type="VECTOR"/>
       <items xsi:type="scave:Group" name="queueingTime: ppp">
         <items xsi:type="scave:Apply" operation="multiply-by">
           <params name="a" value="1000"/>
@@ -148,6 +149,35 @@
         </items>
       </items>
     </datasets>
+    <datasets name="sucessfull within deadline">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_server.sctp) AND name(&quot;End to End Delay*&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Group" name="sucessfull within deadline">
+        <items xsi:type="scave:Apply" operation="compare">
+          <params name="ifEqual" value="1"/>
+          <params name="ifGreater" value="0"/>
+          <params name="ifLess" value="1"/>
+          <params name="threshold" value="0.1"/>
+        </items>
+        <items xsi:type="scave:Apply" operation="sum"/>
+        <items xsi:type="scave:LineChart" name="sucessfull within deadline" lineNameFormat="">
+          <properties name="Line.Type" value="Dots"/>
+          <properties name="Line.Type/period_burst_bs-0-20170517-03:40:27-99837 compare(End to End Delay of Association 11) period_burst_bs" value="Dots"/>
+          <properties name="Line.Type/period_burst_cmt-0-20170517-03:40:20-99837 compare(End to End Delay of Association 8) period_burst_cmt" value="Dots"/>
+          <properties name="Line.Type/period_burst-0-20170517-03:43:01-101131 compare(End to End Delay of Association 4) period_burst" value="Dots"/>
+        </items>
+      </items>
+    </datasets>
+    <datasets name="chunks abandoned sender side">
+      <items xsi:type="scave:Add" filterPattern="module(multihomed.sctp_client.sctpApp[0]) AND name(chunksAbandoned:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Group" name="chunksAbandoned:vector multihomed.sctp_client.sctpApp[0]">
+        <items xsi:type="scave:LineChart" name="chunks abandoned" lineNameFormat="">
+          <properties name="Symbols.Type" value="Diamond"/>
+          <properties name="Line.Type" value="SampleHold"/>
+        </items>
+      </items>
+    </datasets>
   </datasets>
-  <chartSheets/>
+  <chartSheets>
+    <chartSheets name="default"/>
+  </chartSheets>
 </scave:Analysis>
